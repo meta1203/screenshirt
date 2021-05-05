@@ -1,3 +1,4 @@
+// common variables
 var websocket = null;
 
 var knowledge = {
@@ -7,6 +8,8 @@ var knowledge = {
 
 var shirts = [];
 var currentShirt = -1;
+
+// common functions
 
 function loadShirt(shirtId) {
   // stop the previous shirt if it has a stop function
@@ -44,16 +47,25 @@ function nextShirt() {
   loadShirt(shirts[currentShirt]);
 }
 
-function setBackgroundColor(r, g, b) {
-  document.getElementById("content").style.backgroundColor = `rgb(${r},${g},${b})`;
+function selectShirt(shirt) {
+  if (typeof shirt === "number") loadShirt(shirts[shirt])
+  if (typeof shirt === "string") loadShirt(shirt)
 }
 
-// load stuff 
+function setBackgroundColor(r, g, b) {
+  document.getElementById("content").style.backgroundColor = `rgb(${r},${g},${b})`;
+  shirtColor.red = r;
+  shirtColor.blue =  b;
+  shirtColor.green = g;
+}
+
+// init and connect websocket
 document.addEventListener("DOMContentLoaded", function() {
   websocket = new Websocket("ws://localhost:8080/server");
   websocket.connect();
 });
 
+// websocket class
 class Websocket {
   constructor(url) {
     // set up some local values
@@ -90,15 +102,15 @@ class Websocket {
         }
       });
 
-      // get shirts
-      this.client.publish({
-	destination: '/app/shirts'
+      // selecter listener
+      this.client.subscribe('/response/select', (message) => {
+        loadShirt(message.body);
       });
 
-      // get status
-      this.client.publish({
-	destination: '/app/status'
-      });
+      // get shirts
+      this.getShirts();
+
+      this.getStatus();
     };
 
     this.client.onWebSocketClose = (closeEvent) => {
@@ -129,7 +141,21 @@ class Websocket {
   isReady() {
     return this.ready;
   }
+  
+  // server-side functions
+  getStatus() {
+    this.client.publish({
+      destination: "/app/status"
+    });
+  }
 
+  getShirts() {
+    this.client.publish({
+      destination: '/app/shirts'
+    });
+  }
+
+  // generic server communicator
   send(destination, data) {
     this.client.publish({
       destination: destination,
