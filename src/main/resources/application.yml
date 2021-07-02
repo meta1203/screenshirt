@@ -1,3 +1,6 @@
+logging:
+  file:
+    name: screenshirt.log
 spring:
   web:
     resources:
