@@ -1,5 +1,6 @@
 package com.meta1203.screenshirt.bluetooth;
 
+import java.io.IOException;
 import java.util.StringJoiner;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +27,20 @@ public class BluetoothListener {
 		
 		if (incoming.getMessage().startsWith("setshirt|")) {
 			String toSend = incoming.getMessage().replace("setshirt|", "");
+			log.info("Setting shirt to " + toSend);
 			websocket.convertAndSend("/response/select", toSend);
+			return;
+		}
+		
+		if (incoming.getMessage().startsWith("disconnect|")) {
+			log.info("Received disconnect command.");
+			try {
+				synchronized (incoming) {
+					incoming.getConnection().close();
+				}
+			} catch (IOException e) {
+				log.error("Failed to close connection!", e);
+			}
 			return;
 		}
 		

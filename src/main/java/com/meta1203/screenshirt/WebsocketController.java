@@ -1,8 +1,6 @@
 package com.meta1203.screenshirt;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;

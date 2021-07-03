@@ -48,15 +48,16 @@ function nextShirt() {
 }
 
 function selectShirt(shirt) {
-  if (typeof shirt === "number") loadShirt(shirts[shirt])
-  if (typeof shirt === "string") loadShirt(shirt)
+  if (typeof shirt === "number") loadShirt(shirts[shirt]);
+  if (typeof shirt === "string") loadShirt(shirt);
 }
 
 function setBackgroundColor(r, g, b) {
   document.getElementById("content").style.backgroundColor = `rgb(${r},${g},${b})`;
-  shirtColor.red = r;
-  shirtColor.blue =  b;
-  shirtColor.green = g;
+  console.log(knowledge.shirtColor);
+  knowledge.shirtColor.red = r;
+  knowledge.shirtColor.blue =  b;
+  knowledge.shirtColor.green = g;
 }
 
 // init and connect websocket
