@@ -29,12 +29,6 @@ public class WebsocketController {
 	@MessageMapping("/shirts")
 	public void getShirts() {
 		log.info("returning shirts");
-		String[] shirts = (new File("shirts")).list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return new File(dir, name).isDirectory();
-			}
-		});
-		websocket.convertAndSend("/response/shirts", shirts);
+		websocket.convertAndSend("/response/shirts", ShirtManager.getShirts());
 	}
 }
